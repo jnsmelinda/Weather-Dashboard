@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Weather App</title>
+</head>
+
+<body>
+
+    <form id="city-search">
+        <label>Search for a city: </label>
+        <input type="text" id="city-input">
+
+        <input id="search" type="submit" value="search">
+    </form>
+
+    <div class="city"></div>
+    <div class="wind"></div>
+    <div class="humidity"></div>
+    <div class="temp"></div>
+
+    <div class="tempF"></div>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment-with-locales.min.js"></script>
+<script src="./index.js"></script>
+
+</html>
