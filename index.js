@@ -2,9 +2,19 @@ const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
 
 let now = $("#currentDay").text(moment().format("LL"));
 
+function getLocation () {
+    $.ajax('http://ip-api.com/json')
+    .then(
+        (response) => getData(response.city, apiKey),
+        (data, status) => console.log('Request failed.  Returned status of', status)
+    );
+}
+
+getLocation();
+
 $("#search").on("click", function (event) {
     event.preventDefault();
-    const city = $("#city-input").val().trim();
+    let city = $("#city-input").val().trim();
 
     getData(city, apiKey);
 });
@@ -31,7 +41,6 @@ function getData(city, apiKey) {
 
             $(".temp").text("Temperature (K) " + response.main.temp);
             $(".tempF").text("Temperature (F) " + tempF.toFixed(2));
-
         });
 }
 
