@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="./style.css" />
     <title>Weather App</title>
 </head>
@@ -16,21 +17,43 @@
 
     <div class="container">
         <div class="row">
-          <div class="col-2">
-            1 of 2
-          </div>
-          <div class="col-10">
-            2 of 2
-          </div>
+            <div class="col-2">
+                <div class="row">
+                    <!-- <form id="city-search">
+                    <label>Search for a city: </label>
+                    <input type="text" id="city-input">
+
+                    <input id="search" type="submit" value="search">
+                    </form> -->
+
+                    <form>
+                        <div class="form-group mb-2">
+                            <h4>Search for a city: </h4>
+                            <input class="form-control" id="city-input">
+                            <button type="submit" class="btn btn-primary" id="search">search</button>
+                        </div>
+                    </form>
+
+                    <div class="card" style="width: 18rem;">
+                        <ul class="list-group">
+                            <li class="list-group-item">Cras justo odio</li>
+                            <li class="list-group-item">Dapibus ac facilisis in</li>
+                            <li class="list-group-item">Vestibulum at eros</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-10">
+                <div class="card">
+                    <div class="card-body">
+                        This is some text within a card body.
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <form id="city-search">
-        <label>Search for a city: </label>
-        <input type="text" id="city-input">
 
-        <input id="search" type="submit" value="search">
-    </form>
 
     <div class="city"></div>
     <div class="date"></div>

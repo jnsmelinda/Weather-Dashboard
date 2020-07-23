@@ -1,6 +1,6 @@
 const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
 
-$("#currentDay").text(moment().format("LL"));
+let now = $("#currentDay").text(moment().format("LL"));
 
 $("#search").on("click", function (event) {
     event.preventDefault();
@@ -22,7 +22,7 @@ function getData(city, apiKey) {
 
             console.log(response);
 
-            $(".city").html("<h1>" + response.name + " Weather Details</h1>");
+            $(".city").html(response.name + " Weather Details");
             $(".date").text("Date: " + moment().format("LL"));
             $(".wind").text("Wind Speed: " + response.wind.speed);
             $(".humidity").text("Humidity: " + response.main.humidity);
@@ -32,8 +32,7 @@ function getData(city, apiKey) {
             $(".temp").text("Temperature (K) " + response.main.temp);
             $(".tempF").text("Temperature (F) " + tempF.toFixed(2));
 
-            // console.log("Wind Speed: " + response.wind.speed);
-            // console.log("Humidity: " + response.main.humidity);
-            // console.log("Temperature (F): " + tempF);
         });
 }
+
+
