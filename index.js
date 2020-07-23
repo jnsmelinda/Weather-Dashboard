@@ -9,9 +9,6 @@ $("#search").on("click", function (event) {
     getData(city, apiKey);
 });
 
-
-
-
 function getData(city, apiKey) {
     let queryURL = "https://api.openweathermap.org/data/2.5/weather?" + "q=" + city + "&appid=" + apiKey;
 
@@ -26,6 +23,7 @@ function getData(city, apiKey) {
             console.log(response);
 
             $(".city").html("<h1>" + response.name + " Weather Details</h1>");
+            $(".date").text("Date: " + moment().format("LL"));
             $(".wind").text("Wind Speed: " + response.wind.speed);
             $(".humidity").text("Humidity: " + response.main.humidity);
 
