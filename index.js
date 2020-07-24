@@ -59,29 +59,28 @@ function getForecast(lon, lat) {
         method: "GET"
     })
         .then(function (response) {
-            // console.log(response.list[0]);
-
-            let forecastTemperature = Array(response.list.length / 8).fill(0);
-            let forecastHumidity = Array(response.list.length / 8).fill(0);
-            for (let i = 0; i < response.list.length; i++) {
-                const temperature = response.list[i].main.temp;
-                forecastIndex = Math.floor(i / 8);
-                if (forecastTemperature[forecastIndex] < temperature) {
-                    forecastTemperature[forecastIndex] = temperature;
-                }
-                const humidity = response.list[i].main.humidity;
-                if (forecastHumidity[forecastIndex] < humidity) {
-                    forecastHumidity[forecastIndex] = humidity;
-                }
-            }
-
+            let forecastTemperature = getForecastMaximums(response.list, item => item.main.temp);
+            let forecastHumidity = getForecastMaximums(response.list, item => item.main.humidity);
             console.log(forecastTemperature);
             console.log(forecastHumidity);
         });
 }
 
+// stats: an array that contains the data from the response
+// dataPointSupplier: returns the desired field from an element of the stats array
+function getForecastMaximums(stats, dataPointSupplier) {
+    let forecast = Array(stats.length / 8).fill(0);
+    for (let i = 0; i < stats.length; i++) {
+        const dataPoint = dataPointSupplier(stats[i]);
+        forecastIndex = Math.floor(i / 8);
+        if (forecast[forecastIndex] < dataPoint) {
+            forecast[forecastIndex] = dataPoint;
+        }
+    }
 
+    return forecast;
+}
 
+function renderForecastCards(forecastTemperature, forecastHumidity) {
 
-
-
+}

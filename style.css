@@ -3,3 +3,8 @@ h1 {
     background-color: black;
     color: white;
 }
+
+#forecast {
+    margin-left: 15px;
+    margin-right: 10px;
+}
