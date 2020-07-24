@@ -59,18 +59,24 @@ function getForecast(lon, lat) {
         method: "GET"
     })
         .then(function (response) {
-            // console.log(response.list[0].main.temp);
+            // console.log(response.list[0]);
 
-            let forecast = Array(response.list.length / 8).fill(0);
+            let forecastTemperature = Array(response.list.length / 8).fill(0);
+            let forecastHumidity = Array(response.list.length / 8).fill(0);
             for (let i = 0; i < response.list.length; i++) {
                 const temperature = response.list[i].main.temp;
                 forecastIndex = Math.floor(i / 8);
-                if (forecast[forecastIndex] < temperature) {
-                    forecast[forecastIndex] = temperature;
+                if (forecastTemperature[forecastIndex] < temperature) {
+                    forecastTemperature[forecastIndex] = temperature;
+                }
+                const humidity = response.list[i].main.humidity;
+                if (forecastHumidity[forecastIndex] < humidity) {
+                    forecastHumidity[forecastIndex] = humidity;
                 }
             }
 
-            console.log(forecast);
+            console.log(forecastTemperature);
+            console.log(forecastHumidity);
         });
 }
 
