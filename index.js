@@ -21,23 +21,21 @@ $("#search").on("click", function (event) {
 
 function getData(city, apiKey) {
     let queryURL = "https://api.openweathermap.org/data/2.5/weather?" + "q=" + city + "&appid=" + apiKey;
-
     $.ajax({
         url: queryURL,
         method: "GET"
     })
         .then(function (response) {
-            $(".city").html(response.name + " Weather Details");
+            $(".city").html(response.name + " Weather Details:");
             $(".date").text("Date: " + moment().format("LL"));
-            $(".wind").text("Wind Speed: " + response.wind.speed);
+            $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
             $(".humidity").text("Humidity: " + response.main.humidity);
 
             var tempF = (response.main.temp - 273.15) * 1.80 + 32;
-
-            $(".temp").text("Temperature (K) " + response.main.temp);
             $(".tempF").text("Temperature (F) " + tempF.toFixed(2));
 
             getUV(response.coord.lon, response.coord.lat);
+            getForecast(response.coord.lon, response.coord.lat);
         });
 }
 
@@ -52,5 +50,32 @@ function getUV(lon, lat) {
             $(".UV").text("UV: " + response.value);
         });
 }
+
+function getForecast(lon, lat) {
+    let queryURL = "http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    })
+        .then(function (response) {
+            // console.log(response.list[0].main.temp);
+
+            let forecast = Array(response.list.length / 8).fill(0);
+            for (let i = 0; i < response.list.length; i++) {
+                const temperature = response.list[i].main.temp;
+                forecastIndex = Math.floor(i / 8);
+                if (forecast[forecastIndex] < temperature) {
+                    forecast[forecastIndex] = temperature;
+                }
+            }
+
+            console.log(forecast);
+        });
+}
+
+
+
+
 
 
