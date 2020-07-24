@@ -6,7 +6,7 @@ function getLocation () {
     $.ajax('http://ip-api.com/json')
     .then(
         (response) => getData(response.city, apiKey),
-        (data, status) => console.log('Request failed.  Returned status of', status)
+        (data, status) => console.log('Request failed.  Returned status of', status),
     );
 }
 
@@ -27,11 +27,6 @@ function getData(city, apiKey) {
         method: "GET"
     })
         .then(function (response) {
-
-            console.log(queryURL);
-
-            console.log(response);
-
             $(".city").html(response.name + " Weather Details");
             $(".date").text("Date: " + moment().format("LL"));
             $(".wind").text("Wind Speed: " + response.wind.speed);
@@ -41,6 +36,20 @@ function getData(city, apiKey) {
 
             $(".temp").text("Temperature (K) " + response.main.temp);
             $(".tempF").text("Temperature (F) " + tempF.toFixed(2));
+
+            getUV(response.coord.lon, response.coord.lat);
+        });
+}
+
+function getUV(lon, lat) {
+    let queryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    })
+        .then(function (response) {
+            $(".UV").text("UV: " + response.value);
         });
 }
 
