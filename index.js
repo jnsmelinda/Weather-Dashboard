@@ -1,16 +1,9 @@
 const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
-
 let now = $("#currentDay").text(moment().format("LL"));
 
-function getLocation () {
-    $.ajax('http://ip-api.com/json')
-    .then(
-        (response) => getData(response.city, apiKey),
-        (data, status) => console.log('Request failed.  Returned status of', status),
-    );
-}
-
-getLocation();
+$(document).ready(function () {
+    getLocation();
+});
 
 $("#search").on("click", function (event) {
     event.preventDefault();
@@ -18,6 +11,14 @@ $("#search").on("click", function (event) {
 
     getData(city, apiKey);
 });
+
+function getLocation() {
+    $.ajax('http://ip-api.com/json')
+        .then(
+            (response) => getData(response.city, apiKey),
+            (data, status) => console.log('Request failed.  Returned status of', status),
+        );
+}
 
 function getData(city, apiKey) {
     let queryURL = "https://api.openweathermap.org/data/2.5/weather?" + "q=" + city + "&appid=" + apiKey;
@@ -63,6 +64,7 @@ function getForecast(lon, lat) {
             let forecastHumidity = getForecastMaximums(response.list, item => item.main.humidity);
             console.log(forecastTemperature);
             console.log(forecastHumidity);
+            renderForecastCards(forecastTemperature, forecastHumidity);
         });
 }
 
@@ -82,5 +84,14 @@ function getForecastMaximums(stats, dataPointSupplier) {
 }
 
 function renderForecastCards(forecastTemperature, forecastHumidity) {
+    for (let i = 0; i < forecastTemperature.length; i++) {
+        $("#forecastData").append(createCards(forecastTemperature[i], forecastHumidity[i], i));
+    }
+}
 
+function createCards(currentTemp, currentHum, index) {
+    return $("<div>")
+        .attr("id", "card-" + index)
+        .addClass("card forecastDay")
+        .text(currentTemp + " " + currentHum);
 }
