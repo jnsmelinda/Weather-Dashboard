@@ -26,7 +26,7 @@ function getData(city, apiKey) {
         method: "GET"
     })
         .then(function (response) {
-            $(".city").html(response.name + " Weather Details:");
+            $("#currentCity").html(response.name + " Weather Details");
             $(".date").text("Date: " + moment().format("LL"));
             $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
             $(".humidity").text("Humidity: " + response.main.humidity);
