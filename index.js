@@ -60,12 +60,21 @@ function getForecast(lon, lat) {
         method: "GET"
     })
         .then(function (response) {
+            let forecastDates = getForecastDate(response.list);
             let forecastTemperature = getForecastMaximums(response.list, item => item.main.temp);
             let forecastHumidity = getForecastMaximums(response.list, item => item.main.humidity);
-            console.log(forecastTemperature);
-            console.log(forecastHumidity);
-            renderForecastCards(forecastTemperature, forecastHumidity);
+            // let forecastCloud = getForecastClouds(response.list, item => item.main.humidity);
+
+            renderForecastCards(forecastTemperature, forecastHumidity, forecastDates);
         });
+}
+
+function getForecastDate(stats) {
+    let forecast = Array(stats.length / 8).fill("");
+    for (let i = 0; i < stats.length; i += 8) {
+        forecast[Math.floor(i / 8)] = stats[i].dt_txt.substring(0,10).split("-").join("/");
+    }
+    return forecast;
 }
 
 // stats: an array that contains the data from the response
@@ -83,15 +92,15 @@ function getForecastMaximums(stats, dataPointSupplier) {
     return forecast;
 }
 
-function renderForecastCards(forecastTemperature, forecastHumidity) {
+function renderForecastCards(forecastTemperature, forecastHumidity, forecastDates) {
     for (let i = 0; i < forecastTemperature.length; i++) {
-        $("#forecastData").append(createCards(forecastTemperature[i], forecastHumidity[i], i));
+        $("#forecastData").append(createCards(forecastTemperature[i], forecastHumidity[i], forecastDates[i], i));
     }
 }
 
-function createCards(currentTemp, currentHum, index) {
+function createCards(currentTemp, currentHum, currentDate, index) {
     return $("<div>")
         .attr("id", "card-" + index)
         .addClass("card forecastDay")
-        .text(currentTemp + " " + currentHum);
+        .text(currentDate + " " + currentTemp + " " + currentHum);
 }
