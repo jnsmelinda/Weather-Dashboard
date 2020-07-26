@@ -13,6 +13,37 @@ h1 {
     margin-right: 10px;
 }
 
+.low {
+    background-color: rgb(78, 190, 78);
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.moderate {
+    background-color: rgb(250, 235, 25);
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.high {
+    background-color: orange;
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.very-high {
+    background-color: rgb(248, 56, 56);
+    border-radius: 5px;
+    padding: 3px;
+}
+
+.extremly-high {
+    background-color: rgb(139, 34, 87);
+    color: white;
+    border-radius: 5px;
+    padding: 3px;
+}
+
 .forecastDay {
     width: 100px;
     margin-left: 15px;

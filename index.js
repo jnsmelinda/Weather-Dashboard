@@ -42,19 +42,38 @@ function getData(city, apiKey) {
     })
         .then(function (response) {
             console.log(response.weather[response.weather.length - 1].icon);
-            getUV(response.coord.lon, response.coord.lat, (UV) => renderCurrentWeather(response, UV));
+            getUV(response.coord.lon, response.coord.lat, (uv) => renderCurrentWeather(response, uv));
             getForecast(response.coord.lon, response.coord.lat);
         });
 }
 
-function renderCurrentWeather(response, UV) {
+function renderCurrentWeather(response, uv) {
     $(".card-body").html("")
         .append($("<h3>").text(response.name + " Weather Details"))
+        .append($("<h4>").text(moment().format("LL")))
         .append($("<p>").text("Wind Speed: " + response.wind.speed + "MPH"))
         .append($("<p>").text("Humidity: " + response.main.humidity + "%"))
         .append($("<p>").text("Temperature: " + convertToFarenheight(response.main.temp) + "°F"))
-        .append($("<p>").text("UV index: " + UV))
+        .append($("<p>").text("UV index: ").append($("<span>").text(uv).addClass(getUVColorCode(uv))))
         .append(createImg(response.weather[response.weather.length - 1].icon));
+}
+
+function getUVColorCode(uv) {
+    if (uv < 3.0) {
+        return "low";
+    }
+    else if (uv >= 3.0 && uv < 6.0) {
+        return "moderate";
+    }
+    else if (uv >= 5.0 && uv < 8.0) {
+        return "high";
+    }
+    else if (uv >= 8.0 && uv < 11.0) {
+        return "very-high";
+    }
+    else if (uv >= 11.0) {
+        return "extremly-high"
+    }
 }
 
 function convertToFarenheight(temp) {
