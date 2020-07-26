@@ -16,7 +16,6 @@ $("#search").on("click", function (event) {
 });
 
 function search(location) {
-    console.log("called");
     searchHistory.unshift(location);
     if (searchHistory.length > 5) {
         searchHistory.pop();
@@ -42,22 +41,27 @@ function getData(city, apiKey) {
         method: "GET"
     })
         .then(function (response) {
-            $("#currentCity").html(response.name + " Weather Details");
-            $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
-            $(".humidity").text("Humidity: " + response.main.humidity);
-
-            $(".tempF").text("Temperature (F) " + convertToFarenheight(response.main.temp));
-
-            getUV(response.coord.lon, response.coord.lat);
+            console.log(response.weather[response.weather.length - 1].icon);
+            getUV(response.coord.lon, response.coord.lat, (UV) => renderCurrentWeather(response, UV));
             getForecast(response.coord.lon, response.coord.lat);
         });
+}
+
+function renderCurrentWeather(response, UV) {
+    $(".card-body").html("")
+        .append($("<h3>").text(response.name + " Weather Details"))
+        .append($("<p>").text("Wind Speed: " + response.wind.speed + "MPH"))
+        .append($("<p>").text("Humidity: " + response.main.humidity + "%"))
+        .append($("<p>").text("Temperature: " + convertToFarenheight(response.main.temp) + "°F"))
+        .append($("<p>").text("UV index: " + UV))
+        .append(createImg(response.weather[response.weather.length - 1].icon));
 }
 
 function convertToFarenheight(temp) {
     return Math.round((temp - 273.15) * 1.80 + 32);
 }
 
-function getUV(lon, lat) {
+function getUV(lon, lat, setUV) {
     let queryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
 
     $.ajax({
@@ -65,7 +69,7 @@ function getUV(lon, lat) {
         method: "GET"
     })
         .then(function (response) {
-            $(".UV").text("UV: " + response.value);
+            setUV(response.value);
         });
 }
 
@@ -181,7 +185,7 @@ function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
     return $("<div>")
         .attr("id", "card-" + index)
         .addClass("card forecastDay")
-        .text(currentDate + " " + currentTemp + " " + currentHum)
+        .text(currentDate + "\ temp: " + currentTemp + "°\ humidity: " + currentHum + "%")
         .append(currentIcon);
 }
 

@@ -4,6 +4,10 @@ h1 {
     color: white;
 }
 
+#search {
+    margin-top: 5px;
+}
+
 #forecast {
     margin-left: 15px;
     margin-right: 10px;
