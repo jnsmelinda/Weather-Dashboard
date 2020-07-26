@@ -1,7 +1,7 @@
 const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
-let now = $("#currentDay").text(moment().format("LL"));
 
 $(document).ready(function () {
+    $("#currentDay").text(moment().format("LL"));
     getLocation();
 });
 
@@ -16,7 +16,7 @@ function getLocation() {
     $.ajax('http://ip-api.com/json')
         .then(
             (response) => getData(response.city, apiKey),
-            (data, status) => console.log('Request failed.  Returned status of', status),
+            (data, status) => console.log('Request failed. Returned status of', status),
         );
 }
 
@@ -28,7 +28,6 @@ function getData(city, apiKey) {
     })
         .then(function (response) {
             $("#currentCity").html(response.name + " Weather Details");
-            $(".date").text("Date: " + moment().format("LL"));
             $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
             $(".humidity").text("Humidity: " + response.main.humidity);
 
@@ -63,22 +62,49 @@ function getForecast(lon, lat) {
             let forecastDates = getForecastDate(response.list);
             let forecastTemperature = getForecastMaximums(response.list, item => item.main.temp);
             let forecastHumidity = getForecastMaximums(response.list, item => item.main.humidity);
-            // let forecastCloud = getForecastClouds(response.list, item => item.main.humidity);
+            let forecastIcons = getWeatherIcons(response.list);
 
-            renderForecastCards(forecastTemperature, forecastHumidity, forecastDates);
+            renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons);
         });
 }
 
-function getForecastDate(stats) {
-    let forecast = Array(stats.length / 8).fill("");
+function getWeatherIcons(stats) {
+
+    let forecast = Array();
     for (let i = 0; i < stats.length; i += 8) {
-        forecast[Math.floor(i / 8)] = stats[i].dt_txt.substring(0,10).split("-").join("/");
+        let oneDay = new Array();
+        for (let j = 0; j < 8; j++) {
+            oneDay.push(stats[i + j]);
+        }
+
+        forecast.push(oneDay);
     }
-    return forecast;
+
+    let icons = new Array();
+    for (let i = 0; i < forecast.length; i++) {
+        let map = new Map();
+        for (let j = 0; j < forecast[i].length; j++) {
+            const current = forecast[i][j].weather[0].main;
+            if (!map.has(current)) {
+                map.set(current, 0);
+            }
+            map.set(current, map.get(current) + 1);
+        }
+
+        let maxFrequency = 0;
+        let icon = "";
+        for (let [key, value] of map) {
+            if (value > maxFrequency) {
+                maxFrequency = value;
+                icon = key;
+            }
+        }
+        icons.push(icon);
+    }
+
+    return icons;
 }
 
-// stats: an array that contains the data from the response
-// dataPointSupplier: returns the desired field from an element of the stats array
 function getForecastMaximums(stats, dataPointSupplier) {
     let forecast = Array(stats.length / 8).fill(0);
     for (let i = 0; i < stats.length; i++) {
@@ -92,15 +118,26 @@ function getForecastMaximums(stats, dataPointSupplier) {
     return forecast;
 }
 
-function renderForecastCards(forecastTemperature, forecastHumidity, forecastDates) {
+function renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons) {
+    $("#forecastData").html("");
     for (let i = 0; i < forecastTemperature.length; i++) {
-        $("#forecastData").append(createCards(forecastTemperature[i], forecastHumidity[i], forecastDates[i], i));
+        $("#forecastData").append(createCards(forecastTemperature[i], forecastHumidity[i], forecastDates[i], forecastIcons[i], i));
     }
 }
 
-function createCards(currentTemp, currentHum, currentDate, index) {
+function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
     return $("<div>")
         .attr("id", "card-" + index)
         .addClass("card forecastDay")
-        .text(currentDate + " " + currentTemp + " " + currentHum);
+        .text(currentDate + " " + currentTemp + " " + currentHum + " " + currentIcon);
+}
+
+function getForecastDate(stats) {
+    let forecast = Array(stats.length / 8).fill("");
+
+    for (let i = 5; i < stats.length; i += 8) {
+        forecast[Math.floor(i / 8)] = moment.unix(stats[i].dt).utc().format("LL");
+    }
+
+    return forecast;
 }
