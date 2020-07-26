@@ -69,7 +69,44 @@ function getForecast(lon, lat) {
 }
 
 function getWeatherIcons(stats) {
+    let forecast = seaparateToDailyData(stats);
+    let icons = new Array();
+    for (let i = 0; i < forecast.length; i++) {
+        icons.push(getMostFrequentIcon(getFrequency(forecast[i])));
+    }
 
+    return icons;
+}
+
+function getMostFrequentIcon(map) {
+    let maxFrequency = 0;
+    let icon = "";
+    for (let [key, value] of map) {
+        if (value > maxFrequency) {
+            maxFrequency = value;
+            icon = key;
+        }
+    }
+
+    return icon;
+}
+
+function getFrequency(forecast) {
+    let map = new Map();
+    for (let i = 0; i < forecast.length; i++) {
+        for (let j = 0; j < forecast[i].weather.length; j++) {
+            const current = forecast[i].weather[j].icon.replace("n", "d");
+            if (!map.has(current)) {
+                map.set(current, 0);
+            }
+            map.set(current, map.get(current) + 1);
+        }
+    }
+
+    return map;
+}
+
+function seaparateToDailyData(stats) {
     let forecast = Array();
     for (let i = 0; i < stats.length; i += 8) {
         let oneDay = new Array();
@@ -80,29 +117,7 @@ function getWeatherIcons(stats) {
         forecast.push(oneDay);
     }
 
-    let icons = new Array();
-    for (let i = 0; i < forecast.length; i++) {
-        let map = new Map();
-        for (let j = 0; j < forecast[i].length; j++) {
-            const current = forecast[i][j].weather[0].main;
-            if (!map.has(current)) {
-                map.set(current, 0);
-            }
-            map.set(current, map.get(current) + 1);
-        }
-
-        let maxFrequency = 0;
-        let icon = "";
-        for (let [key, value] of map) {
-            if (value > maxFrequency) {
-                maxFrequency = value;
-                icon = key;
-            }
-        }
-        icons.push(icon);
-    }
-
-    return icons;
+    return forecast;
 }
 
 function getForecastMaximums(stats, dataPointSupplier) {
@@ -121,15 +136,21 @@ function getForecastMaximums(stats, dataPointSupplier) {
 function renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons) {
     $("#forecastData").html("");
     for (let i = 0; i < forecastTemperature.length; i++) {
-        $("#forecastData").append(createCards(forecastTemperature[i], forecastHumidity[i], forecastDates[i], forecastIcons[i], i));
+        $("#forecastData").append(createCards(forecastTemperature[i], forecastHumidity[i], forecastDates[i], createImg(forecastIcons[i]), i));
     }
+}
+
+function createImg(forecastIcon) {
+    return $("<img>")
+        .attr("src", "http://openweathermap.org/img/wn/" + forecastIcon + "@2x.png");
 }
 
 function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
     return $("<div>")
         .attr("id", "card-" + index)
         .addClass("card forecastDay")
-        .text(currentDate + " " + currentTemp + " " + currentHum + " " + currentIcon);
+        .text(currentDate + " " + currentTemp + " " + currentHum)
+        .append(currentIcon);
 }
 
 function getForecastDate(stats) {
