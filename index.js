@@ -1,13 +1,26 @@
 const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
 
+
+const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
+
 $(document).ready(function () {
     $("#currentDay").text(moment().format("LL"));
-    getLocation();
+
+    let location = searchHistory.length === 0 ? getLocation() : searchHistory[0];
+
+    getData(location, apiKey);
 });
 
 $("#search").on("click", function (event) {
     event.preventDefault();
     let city = $("#city-input").val().trim();
+
+    searchHistory.unshift(city);
+    if (searchHistory.length > 5) {
+        searchHistory.pop();
+    }
+
+    localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
 
     getData(city, apiKey);
 });
