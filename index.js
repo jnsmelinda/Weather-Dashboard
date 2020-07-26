@@ -49,8 +49,7 @@ function getData(city, apiKey) {
 
 function renderCurrentWeather(response, uv) {
     $(".card-body").html("")
-        .append($("<h3>").text(response.name + " Weather Details"))
-        .append($("<h4>").text(moment().format("LL")))
+        .append($("<h3>").text(response.name + " Weather Details (" + moment().format("LL") + ")"))
         .append($("<p>").text("Wind Speed: " + response.wind.speed + "MPH"))
         .append($("<p>").text("Humidity: " + response.main.humidity + "%"))
         .append($("<p>").text("Temperature: " + convertToFarenheight(response.main.temp) + "°F"))
