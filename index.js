@@ -1,29 +1,31 @@
 const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
-
-
 const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
 $(document).ready(function () {
     $("#currentDay").text(moment().format("LL"));
 
     let location = searchHistory.length === 0 ? getLocation() : searchHistory[0];
-
     getData(location, apiKey);
+    renderSearchHistory();
 });
 
 $("#search").on("click", function (event) {
     event.preventDefault();
-    let city = $("#city-input").val().trim();
+    let location = $("#city-input").val().trim();
+    search(location);
+});
 
-    searchHistory.unshift(city);
+function search(location) {
+    console.log("called");
+    searchHistory.unshift(location);
     if (searchHistory.length > 5) {
         searchHistory.pop();
     }
-
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
 
-    getData(city, apiKey);
-});
+    getData(location, apiKey);
+    renderSearchHistory();
+}
 
 function getLocation() {
     $.ajax('http://ip-api.com/json')
@@ -154,6 +156,20 @@ function renderForecastCards(forecastTemperature, forecastHumidity, forecastDate
     for (let i = 0; i < forecastTemperature.length; i++) {
         $("#forecastData").append(createCards(convertToFarenheight(forecastTemperature[i]), forecastHumidity[i], forecastDates[i], createImg(forecastIcons[i]), i));
     }
+}
+
+function renderSearchHistory() {
+    $("#searchHistory").html("");
+    for (let i = 0; i < searchHistory.length; i++) {
+        $("#searchHistory").append(createListItem(searchHistory[i]));
+    }
+}
+
+function createListItem(item) {
+    return $("<button>")
+    .addClass("list-group-item")
+    .text(item)
+    .on("click", () => search(item));
 }
 
 function createImg(forecastIcon) {
