@@ -31,12 +31,15 @@ function getData(city, apiKey) {
             $(".wind").text("Wind Speed: " + response.wind.speed + "MPH");
             $(".humidity").text("Humidity: " + response.main.humidity);
 
-            var tempF = (response.main.temp - 273.15) * 1.80 + 32;
-            $(".tempF").text("Temperature (F) " + tempF.toFixed(2));
+            $(".tempF").text("Temperature (F) " + convertToFarenheight(response.main.temp));
 
             getUV(response.coord.lon, response.coord.lat);
             getForecast(response.coord.lon, response.coord.lat);
         });
+}
+
+function convertToFarenheight(temp) {
+    return Math.round((temp - 273.15) * 1.80 + 32);
 }
 
 function getUV(lon, lat) {
@@ -136,7 +139,7 @@ function getForecastMaximums(stats, dataPointSupplier) {
 function renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons) {
     $("#forecastData").html("");
     for (let i = 0; i < forecastTemperature.length; i++) {
-        $("#forecastData").append(createCards(forecastTemperature[i], forecastHumidity[i], forecastDates[i], createImg(forecastIcons[i]), i));
+        $("#forecastData").append(createCards(convertToFarenheight(forecastTemperature[i]), forecastHumidity[i], forecastDates[i], createImg(forecastIcons[i]), i));
     }
 }
 
