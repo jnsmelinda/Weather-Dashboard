@@ -7,8 +7,8 @@ demo image:
 ![Demo image](./demo.png)
 
 ## Links
-- https://github.com/jnsmelinda/Work-Day-Scheduler
-- https://jnsmelinda.github.io/Work-Day-Scheduler
+- https://github.com/jnsmelinda/Weather-Dashboard
+- https://jnsmelinda.github.io/Weather-Dashboard
 
 ## Technologies
 - [JavaScript](https://www.javascript.com)
@@ -33,6 +33,7 @@ demo image:
 - rendering current weather dinamically
 - color coding UV
 - adding footer
+- using https instead of http, so that the site works on github pages
 - error handling
 - metric/imperial unit switch
 - desing to fit all screen sizes
