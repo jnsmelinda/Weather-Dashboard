@@ -4,6 +4,10 @@ h1 {
     color: white;
 }
 
+footer {
+    text-align: center;
+}
+
 #search {
     margin-top: 5px;
 }
