@@ -1,8 +1,12 @@
 const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
 const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
+let isMetric = localStorage.getItem("isMetric");
+isMetric = (isMetric != null) ? isMetric === 'true' : true;
+
 $(document).ready(function () {
     $("#currentDay").text(moment().format("L"));
+    $("#unitSwitch").prop("checked", isMetric);
 
     getLocation();
     renderSearchHistory();
@@ -15,6 +19,12 @@ $("#search").on("click", function (event) {
     if (location !== "") {
         search(location);
     }
+});
+
+$("#unitSwitch").on("change", function() {
+    isMetric = !isMetric;
+    localStorage.setItem("isMetric", isMetric);
+    getLocation();
 });
 
 function search(location) {
@@ -59,9 +69,9 @@ function getData(city, apiKey) {
 function renderCurrentWeather(response, uv) {
     $(".card-body").html("")
         .append($("<h3>").text(response.name + " Weather Details (" + moment().format("L") + ")").append(createImg(response.weather[response.weather.length - 1].icon)))
-        .append($("<p>").text("Wind Speed: " + response.wind.speed + "MPH"))
+        .append($("<p>").text("Wind Speed: " + getWindSpeed(response.wind.speed)))
         .append($("<p>").text("Humidity: " + response.main.humidity + "%"))
-        .append($("<p>").text("Temperature: " + convertToFarenheight(response.main.temp) + "°F"))
+        .append($("<p>").text("Temperature: " + getTemperature(response.main.temp)))
         .append($("<p>").text("UV index: ").append($("<span>").text(uv).addClass(getUVColorCode(uv))));
 }
 
@@ -83,8 +93,40 @@ function getUVColorCode(uv) {
     }
 }
 
-function convertToFarenheight(temp) {
+function getWindSpeed(wind) {
+    console.log(wind);
+
+    if (isMetric) {
+        return `${convertToKPH(wind)} km/h`;
+    }
+    else {
+        return `${convertToMPH(wind)} mph`;
+    }
+}
+
+function convertToKPH(wind) {
+    return Math.round(wind * 3.6);
+}
+
+function convertToMPH(wind) {
+    return Math.round(wind * 2.237);
+}
+
+function getTemperature(temp) {
+    if (isMetric) {
+        return `${convertToCelsius(temp)}°C`;
+    }
+    else {
+        return `${convertToFarenheit(temp)}°F`;
+    }
+}
+
+function convertToFarenheit(temp) {
     return Math.round((temp - 273.15) * 1.80 + 32);
+}
+
+function convertToCelsius(temp) {
+    return Math.round(temp - 273.15);
 }
 
 function getUV(lon, lat, setUV) {
@@ -188,7 +230,7 @@ function getForecastMaximums(stats, dataPointSupplier) {
 function renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons) {
     $("#forecastData").html("");
     for (let i = 0; i < forecastTemperature.length; i++) {
-        $("#forecastData").append(createCards(convertToFarenheight(forecastTemperature[i]), forecastHumidity[i], forecastDates[i], createImg(forecastIcons[i]), i));
+        $("#forecastData").append(createCards(getTemperature(forecastTemperature[i]), forecastHumidity[i], forecastDates[i], createImg(forecastIcons[i]), i));
     }
 }
 
@@ -216,7 +258,7 @@ function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
         .attr("id", "card-" + index)
         .addClass("card forecastDay col-6 col-md-4 col-lg-2")
         .append($("<div>").addClass("font-weight-bold").text(currentDate))
-        .append($("<div>").text(`Temp: ${currentTemp}°F`))
+        .append($("<div>").text(`Temp: ${currentTemp}`))
         .append($("<div>").text(`Humidity: ${currentHum} %`))
         .append(currentIcon);
 }
