@@ -8,6 +8,10 @@ footer {
     text-align: center;
 }
 
+#forecast {
+    padding-left: 10px;
+}
+
 #forecastTitle {
     padding-top: 15px;
 }
