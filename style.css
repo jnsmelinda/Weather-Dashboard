@@ -9,7 +9,7 @@ footer {
 }
 
 #forecastTitle {
-    padding-top: 10px;
+    padding-top: 15px;
 }
 
 #search {
@@ -21,6 +21,8 @@ footer {
     margin-right: 10px;
     background-color: rgb(18, 110, 214);
     color: white;
+    padding-top: 10px;
+    margin-bottom: 10px;
 }
 
 .card img {

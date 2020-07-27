@@ -2,7 +2,7 @@ const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
 const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
 $(document).ready(function () {
-    $("#currentDay").text(moment().format("LL"));
+    $("#currentDay").text(moment().format("L"));
 
     getLocation();
     renderSearchHistory();
@@ -58,7 +58,7 @@ function getData(city, apiKey) {
 
 function renderCurrentWeather(response, uv) {
     $(".card-body").html("")
-        .append($("<h3>").text(response.name + " Weather Details (" + moment().format("LL") + ")").append(createImg(response.weather[response.weather.length - 1].icon)))
+        .append($("<h3>").text(response.name + " Weather Details (" + moment().format("L") + ")").append(createImg(response.weather[response.weather.length - 1].icon)))
         .append($("<p>").text("Wind Speed: " + response.wind.speed + "MPH"))
         .append($("<p>").text("Humidity: " + response.main.humidity + "%"))
         .append($("<p>").text("Temperature: " + convertToFarenheight(response.main.temp) + "°F"))
@@ -214,8 +214,10 @@ function createImg(forecastIcon) {
 function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
     return $("<div>")
         .attr("id", "card-" + index)
-        .addClass("card forecastDay col")
-        .text(currentDate + "\ temp: " + currentTemp + "°F\ humidity: " + currentHum + "%")
+        .addClass("card forecastDay col-6 col-md-4 col-lg-2")
+        .append($("<div>").addClass("font-weight-bold").text(currentDate))
+        .append($("<div>").text(`Temp: ${currentTemp} °F`))
+        .append($("<div>").text(`Humidity: ${currentHum} %`))
         .append(currentIcon);
 }
 
@@ -223,7 +225,7 @@ function getForecastDate(stats) {
     let forecast = Array(stats.length / 8).fill("");
 
     for (let i = 5; i < stats.length; i += 8) {
-        forecast[Math.floor(i / 8)] = moment.unix(stats[i].dt).utc().format("LL");
+        forecast[Math.floor(i / 8)] = moment.unix(stats[i].dt).utc().format("L");
     }
 
     return forecast;
