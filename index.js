@@ -94,8 +94,6 @@ function getUVColorCode(uv) {
 }
 
 function getWindSpeed(wind) {
-    console.log(wind);
-
     if (isMetric) {
         return `${convertToKPH(wind)} km/h`;
     }
