@@ -8,13 +8,25 @@ footer {
     text-align: center;
 }
 
+#forecastTitle {
+    padding-top: 10px;
+}
+
 #search {
     margin-top: 5px;
 }
 
-#forecast {
+.forecastDay {
     margin-left: 15px;
     margin-right: 10px;
+    background-color: rgb(18, 110, 214);
+    color: white;
+}
+
+.card img {
+    object-fit: cover;
+    height: 100px;
+    width: 100px;
 }
 
 .low {
@@ -46,9 +58,4 @@ footer {
     color: white;
     border-radius: 5px;
     padding: 3px;
-}
-
-.forecastDay {
-    width: 100px;
-    margin-left: 15px;
 }

@@ -202,7 +202,7 @@ function createImg(forecastIcon) {
 function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
     return $("<div>")
         .attr("id", "card-" + index)
-        .addClass("card forecastDay")
+        .addClass("card forecastDay col")
         .text(currentDate + "\ temp: " + currentTemp + "°\ humidity: " + currentHum + "%")
         .append(currentIcon);
 }
