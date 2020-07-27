@@ -58,12 +58,11 @@ function getData(city, apiKey) {
 
 function renderCurrentWeather(response, uv) {
     $(".card-body").html("")
-        .append($("<h3>").text(response.name + " Weather Details (" + moment().format("LL") + ")"))
+        .append($("<h3>").text(response.name + " Weather Details (" + moment().format("LL") + ")").append(createImg(response.weather[response.weather.length - 1].icon)))
         .append($("<p>").text("Wind Speed: " + response.wind.speed + "MPH"))
         .append($("<p>").text("Humidity: " + response.main.humidity + "%"))
         .append($("<p>").text("Temperature: " + convertToFarenheight(response.main.temp) + "°F"))
-        .append($("<p>").text("UV index: ").append($("<span>").text(uv).addClass(getUVColorCode(uv))))
-        .append(createImg(response.weather[response.weather.length - 1].icon));
+        .append($("<p>").text("UV index: ").append($("<span>").text(uv).addClass(getUVColorCode(uv))));
 }
 
 function getUVColorCode(uv) {
@@ -216,7 +215,7 @@ function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
     return $("<div>")
         .attr("id", "card-" + index)
         .addClass("card forecastDay col")
-        .text(currentDate + "\ temp: " + currentTemp + "°\ humidity: " + currentHum + "%")
+        .text(currentDate + "\ temp: " + currentTemp + "°F\ humidity: " + currentHum + "%")
         .append(currentIcon);
 }
 
