@@ -4,8 +4,7 @@ const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
 $(document).ready(function () {
     $("#currentDay").text(moment().format("LL"));
 
-    let location = searchHistory.length === 0 ? getLocation() : searchHistory[0];
-    getData(location, apiKey);
+    getLocation();
     renderSearchHistory();
 });
 
@@ -27,11 +26,16 @@ function search(location) {
 }
 
 function getLocation() {
-    $.ajax('http://ip-api.com/json')
+    if (searchHistory.length === 0) {
+        $.ajax({url: 'https://ipinfo.io', dataType: "jsonp"})
         .then(
             (response) => getData(response.city, apiKey),
             (data, status) => console.log('Request failed. Returned status of', status),
         );
+    }
+    else {
+        getData(searchHistory[0], apiKey)
+    }
 }
 
 function getData(city, apiKey) {
@@ -80,7 +84,7 @@ function convertToFarenheight(temp) {
 }
 
 function getUV(lon, lat, setUV) {
-    let queryURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
+    let queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
 
     $.ajax({
         url: queryURL,
@@ -92,7 +96,7 @@ function getUV(lon, lat, setUV) {
 }
 
 function getForecast(lon, lat) {
-    let queryURL = "http://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
+    let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
 
     $.ajax({
         url: queryURL,
@@ -196,7 +200,7 @@ function createListItem(item) {
 
 function createImg(forecastIcon) {
     return $("<img>")
-        .attr("src", "http://openweathermap.org/img/wn/" + forecastIcon + "@2x.png");
+        .attr("src", "https://openweathermap.org/img/wn/" + forecastIcon + "@2x.png");
 }
 
 function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
