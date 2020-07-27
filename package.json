@@ -1,0 +1,23 @@
+{
+  "name": "weather-dashboard",
+  "version": "1.0.0",
+  "description": "When the user searches for a city then presented with current and future conditions for that city and that city is added to the search history. The user can view the current weather conditions for that city and presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, the wind speed, and the color coded UV index. Bellow the user can view future weather conditions for that city and presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, and the humidity. When the user clicks on a city in the search history, presented with current and future conditions for that city again. When the user opens the weather dashboard then presented with the last searched city forecast or the location based on the IP address at the wery first use. The user can choose to get the data displayed in imperial or metric units (default: metric).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jnsmelinda/Weather-Dashboard.git"
+  },
+  "author": "Melinda Ivanov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jnsmelinda/Weather-Dashboard/issues"
+  },
+  "homepage": "https://github.com/jnsmelinda/Weather-Dashboard#readme",
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-config-google": "^0.14.0"
+  }
+}

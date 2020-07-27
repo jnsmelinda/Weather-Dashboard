@@ -2,9 +2,9 @@ const apiKey = "bb3735e9ab5dcf958b5bd43205c93bee";
 const searchHistory = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
 let isMetric = localStorage.getItem("isMetric");
-isMetric = (isMetric != null) ? isMetric === 'true' : true;
+isMetric = (isMetric != null) ? isMetric === "true" : true;
 
-$(document).ready(function () {
+$(document).ready(function() {
     $("#currentDay").text(moment().format("L"));
     $("#unitSwitch").prop("checked", isMetric);
 
@@ -12,9 +12,9 @@ $(document).ready(function () {
     renderSearchHistory();
 });
 
-$("#search").on("click", function (event) {
+$("#search").on("click", function(event) {
     event.preventDefault();
-    let location = $("#city-input").val().trim();
+    const location = $("#city-input").val().trim();
 
     if (location !== "") {
         search(location);
@@ -40,22 +40,21 @@ function search(location) {
 
 function renderWeather() {
     if (searchHistory.length === 0) {
-        $.ajax({url: 'https://ipinfo.io', dataType: "jsonp"})
+        $.ajax({url: "https://ipinfo.io", dataType: "jsonp"})
             .then(
                 (response) => fetchDataAndRenderCurrentWeather(response.city, apiKey),
                 (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
             );
-    }
-    else {
-        fetchDataAndRenderCurrentWeather(searchHistory[0], apiKey)
+    } else {
+        fetchDataAndRenderCurrentWeather(searchHistory[0], apiKey);
     }
 }
 
 function fetchDataAndRenderCurrentWeather(city, apiKey) {
-    let queryURL = "https://api.openweathermap.org/data/2.5/weather?" + "q=" + city + "&appid=" + apiKey;
+    const queryURL = "https://api.openweathermap.org/data/2.5/weather?" + "q=" + city + "&appid=" + apiKey;
     $.ajax({url: queryURL, method: "GET"})
         .then(
-            function (response) {
+            function(response) {
                 getUV(response.coord.lon, response.coord.lat, (uv) => renderCurrentWeather(response, uv));
                 getForecast(response.coord.lon, response.coord.lat);
             },
@@ -65,7 +64,9 @@ function fetchDataAndRenderCurrentWeather(city, apiKey) {
 
 function renderCurrentWeather(response, uv) {
     $(".card-body").html("")
-        .append($("<h3>").text(response.name + " Weather Details (" + moment().format("L") + ")").append(createImg(response.weather[response.weather.length - 1].icon)))
+        .append($("<h3>")
+            .text(`${response.name} Weather Details (${moment().format("L")})`)
+            .append(createImg(response.weather[response.weather.length - 1].icon)))
         .append($("<p>").text("Wind Speed: " + getWindSpeed(response.wind.speed)))
         .append($("<p>").text("Humidity: " + response.main.humidity + "%"))
         .append($("<p>").text("Temperature: " + getTemperature(response.main.temp)))
@@ -75,26 +76,21 @@ function renderCurrentWeather(response, uv) {
 function getUVColorCode(uv) {
     if (uv < 3.0) {
         return "low";
-    }
-    else if (uv >= 3.0 && uv < 6.0) {
+    } else if (uv >= 3.0 && uv < 6.0) {
         return "moderate";
-    }
-    else if (uv >= 5.0 && uv < 8.0) {
+    } else if (uv >= 5.0 && uv < 8.0) {
         return "high";
-    }
-    else if (uv >= 8.0 && uv < 11.0) {
+    } else if (uv >= 8.0 && uv < 11.0) {
         return "very-high";
-    }
-    else if (uv >= 11.0) {
-        return "extremly-high"
+    } else if (uv >= 11.0) {
+        return "extremly-high";
     }
 }
 
 function getWindSpeed(wind) {
     if (isMetric) {
         return `${convertToKPH(wind)} km/h`;
-    }
-    else {
+    } else {
         return `${convertToMPH(wind)} mph`;
     }
 }
@@ -110,8 +106,7 @@ function convertToMPH(wind) {
 function getTemperature(temp) {
     if (isMetric) {
         return `${convertToCelsius(temp)}°C`;
-    }
-    else {
+    } else {
         return `${convertToFarenheit(temp)}°F`;
     }
 }
@@ -125,25 +120,25 @@ function convertToFarenheit(temp) {
 }
 
 function getUV(lon, lat, setUV) {
-    let queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
+    const queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
 
     $.ajax({url: queryURL, method: "GET"})
         .then(
-            response => setUV(response.value),
+            (response) => setUV(response.value),
             (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
         );
 }
 
 function getForecast(lon, lat) {
-    let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
+    const queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
 
     $.ajax({url: queryURL, method: "GET"})
         .then(
-            function (response) {
-                let forecastDates = getForecastDate(response.list);
-                let forecastTemperature = getForecastMaximums(response.list, item => item.main.temp);
-                let forecastHumidity = getForecastMaximums(response.list, item => item.main.humidity);
-                let forecastIcons = getWeatherIcons(response.list);
+            function(response) {
+                const forecastDates = getForecastDate(response.list);
+                const forecastTemperature = getForecastMaximums(response.list, (item) => item.main.temp);
+                const forecastHumidity = getForecastMaximums(response.list, (item) => item.main.humidity);
+                const forecastIcons = getWeatherIcons(response.list);
 
                 renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons);
             },
@@ -152,8 +147,8 @@ function getForecast(lon, lat) {
 }
 
 function getWeatherIcons(stats) {
-    let forecast = seaparateToDailyData(stats);
-    let icons = new Array();
+    const forecast = seaparateToDailyData(stats);
+    const icons = [];
     for (let i = 0; i < forecast.length; i++) {
         icons.push(getMostFrequentIcon(getFrequency(forecast[i])));
     }
@@ -164,7 +159,7 @@ function getWeatherIcons(stats) {
 function getMostFrequentIcon(map) {
     let maxFrequency = 0;
     let icon = "";
-    for (let [key, value] of map) {
+    for (const [key, value] of map) {
         if (value > maxFrequency) {
             maxFrequency = value;
             icon = key;
@@ -175,7 +170,7 @@ function getMostFrequentIcon(map) {
 }
 
 function getFrequency(forecast) {
-    let map = new Map();
+    const map = new Map();
     for (let i = 0; i < forecast.length; i++) {
         for (let j = 0; j < forecast[i].weather.length; j++) {
             const current = forecast[i].weather[j].icon.replace("n", "d");
@@ -190,9 +185,9 @@ function getFrequency(forecast) {
 }
 
 function seaparateToDailyData(stats) {
-    let forecast = Array();
+    const forecast = [];
     for (let i = 0; i < stats.length; i += 8) {
-        let oneDay = new Array();
+        const oneDay = [];
         for (let j = 0; j < 8; j++) {
             oneDay.push(stats[i + j]);
         }
@@ -204,7 +199,7 @@ function seaparateToDailyData(stats) {
 }
 
 function getForecastMaximums(stats, dataPointSupplier) {
-    let forecast = Array(stats.length / 8).fill(0);
+    const forecast = Array(stats.length / 8).fill(0);
     for (let i = 0; i < stats.length; i++) {
         const dataPoint = dataPointSupplier(stats[i]);
         forecastIndex = Math.floor(i / 8);
@@ -216,10 +211,10 @@ function getForecastMaximums(stats, dataPointSupplier) {
     return forecast;
 }
 
-function renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons) {
+function renderForecastCards(temperatures, humidities, dates, icons) {
     $("#forecastData").html("");
-    for (let i = 0; i < forecastTemperature.length; i++) {
-        $("#forecastData").append(createCards(getTemperature(forecastTemperature[i]), forecastHumidity[i], forecastDates[i], createImg(forecastIcons[i]), i));
+    for (let i = 0; i < temperatures.length; i++) {
+        $("#forecastData").append(createCards(getTemperature(temperatures[i]), humidities[i], dates[i], createImg(icons[i]), i));
     }
 }
 
@@ -232,9 +227,9 @@ function renderSearchHistory() {
 
 function createListItem(item) {
     return $("<button>")
-    .addClass("list-group-item")
-    .text(item)
-    .on("click", () => search(item));
+        .addClass("list-group-item")
+        .text(item)
+        .on("click", () => search(item));
 }
 
 function createImg(forecastIcon) {
@@ -252,7 +247,7 @@ function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
 }
 
 function getForecastDate(stats) {
-    let forecast = Array(stats.length / 8).fill("");
+    const forecast = Array(stats.length / 8).fill("");
 
     for (let i = 5; i < stats.length; i += 8) {
         forecast[Math.floor(i / 8)] = moment.unix(stats[i].dt).utc().format("L");
