@@ -21,6 +21,10 @@ footer {
     margin-bottom: 10px;
 }
 
+.card {
+    min-width: 160px;
+}
+
 .card img {
     object-fit: cover;
     height: 100px;
