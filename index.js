@@ -216,7 +216,7 @@ function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
         .attr("id", "card-" + index)
         .addClass("card forecastDay col-6 col-md-4 col-lg-2")
         .append($("<div>").addClass("font-weight-bold").text(currentDate))
-        .append($("<div>").text(`Temp: ${currentTemp} °F`))
+        .append($("<div>").text(`Temp: ${currentTemp}°F`))
         .append($("<div>").text(`Humidity: ${currentHum} %`))
         .append(currentIcon);
 }
