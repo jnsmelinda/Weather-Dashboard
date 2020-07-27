@@ -8,7 +8,7 @@ $(document).ready(function () {
     $("#currentDay").text(moment().format("L"));
     $("#unitSwitch").prop("checked", isMetric);
 
-    getLocation();
+    renderWeather();
     renderSearchHistory();
 });
 
@@ -24,7 +24,7 @@ $("#search").on("click", function (event) {
 $("#unitSwitch").on("change", function() {
     isMetric = !isMetric;
     localStorage.setItem("isMetric", isMetric);
-    getLocation();
+    renderWeather();
 });
 
 function search(location) {
@@ -38,7 +38,7 @@ function search(location) {
     renderSearchHistory();
 }
 
-function getLocation() {
+function renderWeather() {
     if (searchHistory.length === 0) {
         $.ajax({url: 'https://ipinfo.io', dataType: "jsonp"})
         .then(
@@ -257,7 +257,7 @@ function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
         .addClass("card forecastDay col-6 col-md-4 col-lg-2")
         .append($("<div>").addClass("font-weight-bold").text(currentDate))
         .append($("<div>").text(`Temp: ${currentTemp}`))
-        .append($("<div>").text(`Humidity: ${currentHum} %`))
+        .append($("<div>").text(`Humidity: ${currentHum}%`))
         .append(currentIcon);
 }
 
