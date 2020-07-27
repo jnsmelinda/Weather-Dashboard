@@ -64,12 +64,11 @@ function fetchDataAndRenderCurrentWeather(city, apiKey) {
 
 function renderCurrentWeather(response, uv) {
     $(".card-body").html("")
-        .append($("<h3>")
-            .text(`${response.name} Weather Details (${moment().format("L")})`)
+        .append($("<h3>").text(`${response.name} Weather Details (${moment().format("L")})`)
             .append(createImg(response.weather[response.weather.length - 1].icon)))
+        .append($("<p>").text("Temperature: " + getTemperature(response.main.temp)))
         .append($("<p>").text("Wind Speed: " + getWindSpeed(response.wind.speed)))
         .append($("<p>").text("Humidity: " + response.main.humidity + "%"))
-        .append($("<p>").text("Temperature: " + getTemperature(response.main.temp)))
         .append($("<p>").text("UV index: ").append($("<span>").text(uv).addClass(getUVColorCode(uv))));
 }
 
