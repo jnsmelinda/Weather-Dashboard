@@ -11,7 +11,10 @@ $(document).ready(function () {
 $("#search").on("click", function (event) {
     event.preventDefault();
     let location = $("#city-input").val().trim();
-    search(location);
+
+    if (location !== "") {
+        search(location);
+    }
 });
 
 function search(location) {
@@ -30,7 +33,7 @@ function getLocation() {
         $.ajax({url: 'https://ipinfo.io', dataType: "jsonp"})
         .then(
             (response) => getData(response.city, apiKey),
-            (data, status) => console.log('Request failed. Returned status of', status),
+            (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
         );
     }
     else {
@@ -44,11 +47,13 @@ function getData(city, apiKey) {
         url: queryURL,
         method: "GET"
     })
-        .then(function (response) {
-            console.log(response.weather[response.weather.length - 1].icon);
-            getUV(response.coord.lon, response.coord.lat, (uv) => renderCurrentWeather(response, uv));
-            getForecast(response.coord.lon, response.coord.lat);
-        });
+        .then(
+            function (response) {
+                getUV(response.coord.lon, response.coord.lat, (uv) => renderCurrentWeather(response, uv));
+                getForecast(response.coord.lon, response.coord.lat);
+            },
+            (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
+        );
 }
 
 function renderCurrentWeather(response, uv) {
@@ -90,9 +95,10 @@ function getUV(lon, lat, setUV) {
         url: queryURL,
         method: "GET"
     })
-        .then(function (response) {
-            setUV(response.value);
-        });
+        .then(
+            response => setUV(response.value),
+            (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
+        );
 }
 
 function getForecast(lon, lat) {
@@ -102,14 +108,17 @@ function getForecast(lon, lat) {
         url: queryURL,
         method: "GET"
     })
-        .then(function (response) {
-            let forecastDates = getForecastDate(response.list);
-            let forecastTemperature = getForecastMaximums(response.list, item => item.main.temp);
-            let forecastHumidity = getForecastMaximums(response.list, item => item.main.humidity);
-            let forecastIcons = getWeatherIcons(response.list);
+        .then(
+            function (response) {
+                let forecastDates = getForecastDate(response.list);
+                let forecastTemperature = getForecastMaximums(response.list, item => item.main.temp);
+                let forecastHumidity = getForecastMaximums(response.list, item => item.main.humidity);
+                let forecastIcons = getWeatherIcons(response.list);
 
-            renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons);
-        });
+                renderForecastCards(forecastTemperature, forecastHumidity, forecastDates, forecastIcons);
+            },
+            (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
+        );
 }
 
 function getWeatherIcons(stats) {
