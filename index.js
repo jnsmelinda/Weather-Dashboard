@@ -34,29 +34,26 @@ function search(location) {
     }
     localStorage.setItem("searchHistory", JSON.stringify(searchHistory));
 
-    getData(location, apiKey);
+    fetchDataAndRenderCurrentWeather(location, apiKey);
     renderSearchHistory();
 }
 
 function renderWeather() {
     if (searchHistory.length === 0) {
         $.ajax({url: 'https://ipinfo.io', dataType: "jsonp"})
-        .then(
-            (response) => getData(response.city, apiKey),
-            (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
-        );
+            .then(
+                (response) => fetchDataAndRenderCurrentWeather(response.city, apiKey),
+                (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
+            );
     }
     else {
-        getData(searchHistory[0], apiKey)
+        fetchDataAndRenderCurrentWeather(searchHistory[0], apiKey)
     }
 }
 
-function getData(city, apiKey) {
+function fetchDataAndRenderCurrentWeather(city, apiKey) {
     let queryURL = "https://api.openweathermap.org/data/2.5/weather?" + "q=" + city + "&appid=" + apiKey;
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    })
+    $.ajax({url: queryURL, method: "GET"})
         .then(
             function (response) {
                 getUV(response.coord.lon, response.coord.lat, (uv) => renderCurrentWeather(response, uv));
@@ -119,21 +116,18 @@ function getTemperature(temp) {
     }
 }
 
-function convertToFarenheit(temp) {
-    return Math.round((temp - 273.15) * 1.80 + 32);
-}
-
 function convertToCelsius(temp) {
     return Math.round(temp - 273.15);
+}
+
+function convertToFarenheit(temp) {
+    return Math.round((temp - 273.15) * 1.80 + 32);
 }
 
 function getUV(lon, lat, setUV) {
     let queryURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + apiKey + "&lat=" + lat + "&lon=" + lon;
 
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    })
+    $.ajax({url: queryURL, method: "GET"})
         .then(
             response => setUV(response.value),
             (response, status) => console.log(`Request failed. Returned status: ${status}, response: ${JSON.stringify(response)}`)
@@ -143,10 +137,7 @@ function getUV(lon, lat, setUV) {
 function getForecast(lon, lat) {
     let queryURL = "https://api.openweathermap.org/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey;
 
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    })
+    $.ajax({url: queryURL, method: "GET"})
         .then(
             function (response) {
                 let forecastDates = getForecastDate(response.list);
@@ -247,8 +238,7 @@ function createListItem(item) {
 }
 
 function createImg(forecastIcon) {
-    return $("<img>")
-        .attr("src", "https://openweathermap.org/img/wn/" + forecastIcon + "@2x.png");
+    return $("<img>").attr("src", "https://openweathermap.org/img/wn/" + forecastIcon + "@2x.png");
 }
 
 function createCards(currentTemp, currentHum, currentDate, currentIcon, index) {
